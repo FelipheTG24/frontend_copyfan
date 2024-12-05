@@ -73,14 +73,14 @@ export default function Home() {
     <div className="w-full min-h-screen bg-slate-500 flex justify-center px-4">
       <main className="my-10 w-full lg:max-w-5xl">
         <section>
-          <h1 className="text-4xl text-slate-200 font-medium text-center">To Do List</h1>
+          <h1 className="text-4xl text-slate-200 font-medium text-center">Pagamento</h1>
 
           <form className="flex flex-col my-6" onSubmit={createTask}>
           
-            <label className="text-slate-200">Task Description</label>
+            <label className="text-slate-200">Valor Total</label>
             <input type="text" className="w-full mb-5 p-2 rounded" ref={descriptionRef}/>
 
-            <label className="text-slate-200">Date</label>
+            <label className="text-slate-200">Data</label>
             <input type="date" className="w-full mb-5 p-2 rounded" ref={dateRef} />
 
             <input type="submit" value={"Add Task"} className="cursor-pointer w-full bg-slate-800 rounded font-medium text-slate-200 p-4" />
