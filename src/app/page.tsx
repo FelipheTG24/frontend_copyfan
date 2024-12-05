@@ -17,6 +17,7 @@ export default function Home() {
 
   // Linkar os inputs
   const descriptionRef = useRef<HTMLInputElement | null>(null)
+  const selectnRef = useRef<HTMLSelectElement | null>(null)
   const dateRef = useRef<HTMLInputElement | null>(null)
 
   // Inicializa lista de tarefas da página como lista vazia
@@ -29,15 +30,19 @@ export default function Home() {
 
   // Busca as tarefas no banco de dados via API
   async function readPagamento() {
-    const response = await api.get("/pagamento")
+    try {
+    const response = await api.get("/pagamentos")
     console.log(response.data)
-    setPagamento(response.data)
+    setPagamento(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    setPagamento([]);
   }
 
   // Cria uma nova tarefa
   async function createTask(event: FormEvent) {
     event.preventDefault()
-    const response = await api.post("/pagamento", {
+    const response = await api.post("/pagamentos", {
       description: descriptionRef.current?.value,
       date: dateRef.current?.value
     }) 
@@ -47,7 +52,7 @@ export default function Home() {
   // Deleta uma tarefa
   async function deleteTask(id: string){
     try{
-      await api.delete("/pagamento/" + id)
+      await api.delete("/pagamentos/" + id)
       const allPagamento = pagamento.filter((task) => task.id !== id)
       setPagamento(allPagamento)
     }
@@ -58,10 +63,10 @@ export default function Home() {
 
   async function setTaskDone(id:string) {
     try {
-      await api.put("/pagamento/" + id, {
+      await api.put("/pagamentos/" + id, {
         status: true,
       })
-      const response = await api.get("/pagamento")
+      const response = await api.get("/pagamentos")
       setPagamento(response.data)
     }
     catch(err){
@@ -80,6 +85,14 @@ export default function Home() {
             <label className="text-slate-200">Valor Total</label>
             <input type="text" className="w-full mb-5 p-2 rounded" ref={descriptionRef}/>
 
+            <label className="text-slate-200">Forma de Pagamento</label>
+             <select ref={selectnRef}>
+            <option value="credit-card"> Cartão de Crédito</option>
+            <option value="debit-card"> Cartão de Débito</option>
+            <option value="pix"> Pix</option>
+            <option value="cash"> Dinheiro</option>
+            </select>
+
             <label className="text-slate-200">Data</label>
             <input type="date" className="w-full mb-5 p-2 rounded" ref={dateRef} />
 
@@ -87,9 +100,11 @@ export default function Home() {
           </form>
 
         </section>
-        <section className="mt-5 flex flex-col">
+        {/* <section className="mt-5 flex flex-col">
 
-          {pagamento.map((task) => (
+          {pagamento.length > 0 ? (
+          
+          pagamento.map((task) => (
             <article className="w-full bg-slate-200 text-slate-800 p-2 mb-4 rounded relative hover:bg-sky-300" key={task.id}>
               <p>{task.description}</p>
               <p>{new Date(task.dataHoraPagamento).toLocaleDateString()}</p>
@@ -100,9 +115,13 @@ export default function Home() {
 
               <button className="flex absolute right-0 -top-2 bg-red-600 w-7 h-7 items-center justify-center text-slate-200" onClick={() => deleteTask(task.id)}><FiTrash></FiTrash></button>
             </article>
-          ))}
-        </section>
+          ))
+        ) : (
+         <p className= "text-center text-gray-500"> Nenhum pagamento encontrado.</p>
+        )} 
+        </section> */}
       </main>
     </div>
   );
+ }
 }
